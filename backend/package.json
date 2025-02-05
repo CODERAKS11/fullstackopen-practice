@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend for notes app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CODERAKS11/fullstackopen-practice.git"
+  },
+  "author": "Amarjeet Kumar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CODERAKS11/fullstackopen-practice/issues"
+  },
+  "homepage": "https://github.com/CODERAKS11/fullstackopen-practice#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
