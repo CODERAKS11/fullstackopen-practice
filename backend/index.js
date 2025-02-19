@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
 const app = express()
+const Note = require('./models/note')
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(cors())
@@ -61,45 +62,49 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
+  Note.find({}).then((notes)=>{
+    response.json(notes)
+  })
 })
 
 app.get('/api/notes/:id', (request, response) => {
-    const id = request.params.id
-    const note = notes.find(note => note.id === id)
-    if (note) {
+    Note.findById(request.params.id).then(note => {
       response.json(note)
-    } else {
-      response.status(404).end()
-    }
+    }).catch(error=>{
+      response.status(404).json({error: `note with ${request.params.id} not found`})
+    })
 })
 
 app.delete('/api/notes/:id', (request, response) => {
     const id = request.params.id
-    notes = notes.filter(note => note.id !== id)
+    // notes = notes.filter(note => note.id !== id)
   
-    response.status(204).end()
+    // response.status(204).end()
+    Note.findByIdAndDelete(id).then(response =>{
+      console.log(`Note with id ${id} deleted`)
+    }).catch(error=>{
+      response.status(404).json({error: `note with ${request.params.id} not found`})
+    })
 })
   
-  app.post('/api/notes', (request, response) => {
-    const body = request.body
-  
-    if (!body.content) {
-      return response.status(400).json({ 
-        error: 'content missing' 
-      })
-    }
-  
-    const note = {
-      content: body.content,
-      important: Boolean(body.important) || false,
-      id: generateId(),
-    }
-  
-    notes = notes.concat(note)
-  
-    response.json(note)
+app.post('/api/notes', (request, response) => {
+  const body = request.body
+
+  if (!body.content) {
+    return response.status(400).json({ 
+      error: 'content missing' 
+    })
+  }
+
+  const note = new Note( {
+    content: body.content,
+    important: Boolean(body.important) || false
+    
   })
+  note.save().then(savedNote =>{
+    response.json(savedNote)
+  })
+})
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
